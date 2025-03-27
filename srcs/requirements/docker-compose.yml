@@ -2,3 +2,7 @@ services:
   mariadb:
     container_name: mariadb
     restart: always
+    build: ./requirements/mariadb
+    image: mariadb:aheinane
+    ports: 
+      -3306
