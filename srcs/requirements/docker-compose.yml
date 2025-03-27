@@ -1,0 +1,4 @@
+services:
+  mariadb:
+    container_name: mariadb
+    restart: always
