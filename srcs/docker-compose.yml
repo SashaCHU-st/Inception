@@ -6,8 +6,8 @@ services:
     image: mariadb:aheinane #specific version whcih gonna be used for conatiner, in this case it is customised my version
     volumes: 
       - mariadb:/var/lib/mysql # establish volume (mariadb) to directory(/var/lib/mysql) inside the container, where mariab stores db
-    network:
-      - network # name of the network to whcih connect. Docker will be connecting to this network
+    networks:
+      - network_for_project # name of the network to whcih connect. Docker will be connecting to this network
     env_file:
       - .env #password for lauch db
 
@@ -16,10 +16,12 @@ services:
     restart: always
     build: ./requirements/nginx
     image: nginx:aheinane
+    depends_on:
+      - wordpress
     volumes:
       - wordpress:/var/www/html # /var/www/html  standard pace for file of website
-    network:
-      - network
+    networks:
+      - network_for_project
     env_file:
       - .env
 
@@ -28,10 +30,31 @@ services:
       restart: always
       build: ./requirements/wordpress
       image: wordpress:aheinane
+      depends_on:
+        - mariadb
       volumes:
       - wordpress:/var/www/html # /var/www/html  standard pace for file of website
-      network:
-        - network
+      networks:
+        - network_for_project
       env_file:
         - .env
 
+volumes:
+  mariadb:
+    driver: local
+    driver-opts:
+      type: none
+      o: bind
+      device: home/aheinane/data/mariadb
+  wordpress:
+    driver: local
+    driver-opts:
+      type: none
+      o: bind
+      device: home/aheinane/data/wordpress
+
+
+
+networks:
+  network_for_project:
+    driver: bridge
