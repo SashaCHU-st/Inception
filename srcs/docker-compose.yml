@@ -1,0 +1,37 @@
+services:
+  mariadb:  # custom service from some place/directory
+    container_name: mariadb # will be name of contaner
+    restart: always  #restart if smth went wrong
+    build: ./requirements/mariadb # the folder for container
+    image: mariadb:aheinane #specific version whcih gonna be used for conatiner, in this case it is customised my version
+    volumes: 
+      - mariadb:/var/lib/mysql # establish volume (mariadb) to directory(/var/lib/mysql) inside the container, where mariab stores db
+    network:
+      - network # name of the network to whcih connect. Docker will be connecting to this network
+    env_file:
+      - .env #password for lauch db
+
+  nginx:
+    container_name: nginx
+    restart: always
+    build: ./requirements/nginx
+    image: nginx:aheinane
+    volumes:
+      - wordpress:/var/www/html # /var/www/html  standard pace for file of website
+    network:
+      - network
+    env_file:
+      - .env
+
+    wordpress:
+      container_name: wordpresss
+      restart: always
+      build: ./requirements/wordpress
+      image: wordpress:aheinane
+      volumes:
+      - wordpress:/var/www/html # /var/www/html  standard pace for file of website
+      network:
+        - network
+      env_file:
+        - .env
+
